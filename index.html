@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="utf-8">
+    <meta name="author" content="Patrick Ausel">
+    <meta name="description" content="A minesweeper clone implemented without using any external frameworks">
+    <title>Minesweeper VanillaJS</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <h1 class="titles">Minesweeper</h1>
+        <h3 class="titles">Implemented using VanillaJS</h2>
+    </header>
+
+    <main>
+        <div id="gameContainer">
+        </div>
+        <br>
+        <p>Made by Patrick Ausel.</p>
+    </main>
+
+    <script>
+        class Space {
+            constructor(activated = false, contents = " ") {
+                this.Activated = activated;
+                // The contents can either be " " or "M" which stand for an empty space and a mine respectively.
+                this.Contents = contents;
+            }
+
+            Reveal(id) {
+                this.Activated = true;
+                if(this.Contents == "M") {
+                    // GAME OVER!!!
+                }
+                let spaceToChange = document.getElementById(id);
+                spaceToChange.style.backgroundColor = "#333";
+                spaceToChange.classList.add("activated");
+            }
+        }
+
+        function InitialiseGrid(columns, rows) {
+            // If there are already spaces in the grid, get rid of them.
+            container.textContent = "";
+
+            // Make a list of Space objects that will be returned at the end.
+            spacesToReturn = [];
+
+            // Make the grid now as wide and tall as the game grid should be. This is done by changing the variables declared in the CSS.
+            container.style.setProperty("--gridColumns", columns);
+            container.style.setProperty("--gridRows", rows);
+
+            // Add as many spaces as required.
+            // Keep a running total of the number of mines.
+            minesNumber = 0;
+            for (let spacesToAppend = 0; spacesToAppend < columns*rows; spacesToAppend++) {
+                // Decide whether this space should be a mine or not. Let the initial probability of the space being a mine be 1/2. Then, if there's not already too many mines, then make it a mine. Otherwise, make it an empty space.
+                // Note that "too many mines" are the maximum number of mines allowed in Microsoft's implementation of minesweeper, (x-1)(y-1) where x and y are the width and height of the grid respectively.
+                if(Math.floor(Math.random()*4) == 0 && minesNumber < columns*rows/3) {
+                    spacesToReturn.push(new Space(false, "M"));
+                    minesNumber++;
+                }
+                else {
+                    spacesToReturn.push(new Space(false, " "));
+                }
+            }
+
+            // Shuffle the array to make sure that there are no mines at the end of the array.
+            spacesToReturn = Shuffle(spacesToReturn);
+
+            return spacesToReturn;
+        }
+
+        function AddToGrid(spacesToAdd) {
+            for(let currentSpaceNumber = 0; currentSpaceNumber < spacesToAdd.length; currentSpaceNumber++) {
+                // Create a new space.
+                let currentSpaceHTML = document.createElement("div");
+                // Make its inner text be a number for now, this will be changed to either be blank, a number, a flag, a question mark, or a mine later on.
+                currentSpaceHTML.innerText = (spacesToAdd[currentSpaceNumber].Contents);
+                currentSpaceHTML.id = "space" + String(currentSpaceNumber);
+                
+                //Change the style to an unrevealed space. 
+                currentSpaceHTML.style.backgroundColor = "#555";
+                
+                // Add an event listener to trigger the appropriate function to reveal the space.
+                currentSpaceHTML.addEventListener("click", e => spacesToAdd[currentSpaceNumber].Reveal("space" + String(currentSpaceNumber)));
+                // Also add one to prevent the user from right-clicking (instead a mine will be set).
+                currentSpaceHTML.addEventListener('contextmenu', e => e.preventDefault());
+
+                // Actually append this created space onto the grid.
+                container.appendChild(currentSpaceHTML).className = "spaces";
+            }     
+        }
+
+        // Use the Fisher-Yates shuffle algorithm, minorly modified from the implementation available at https://github.com/Daplie/knuth-shuffle . Licensed under the Apache License 2.0 available at http://www.apache.org/licenses/ .
+        function Shuffle(array) {
+            let currentIndex = array.length, temporaryValue, randomIndex;
+
+            // While there remain elements to shuffle...
+            while (0 !== currentIndex) {
+
+                // Pick a remaining element...
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex -= 1;
+
+                // And swap it with the current element.
+                temporaryValue = array[currentIndex];
+                array[currentIndex] = array[randomIndex];
+                array[randomIndex] = temporaryValue;
+            }
+
+            return array;
+        }
+
+        const container = document.getElementById("gameContainer");
+        let spaces = InitialiseGrid(16, 16);
+        AddToGrid(spaces);
+    </script>
+</body>
+</html>
