@@ -24,20 +24,24 @@
 
     <script>
         class Space {
-            constructor(activated = false, contents = " ") {
+            constructor(activated = false, contents = " ", id = "spacesXXX") {
                 this.Activated = activated;
                 // The contents can either be " " or "M" which stand for an empty space and a mine respectively.
                 this.Contents = contents;
+                this.ID = id;
             }
 
-            Reveal(id) {
+            Reveal() {
                 this.Activated = true;
                 if(this.Contents == "M") {
                     // GAME OVER!!!
                 }
-                let spaceToChange = document.getElementById(id);
+                let spaceToChange = document.getElementById(this.ID);
                 spaceToChange.style.backgroundColor = "#333";
                 spaceToChange.classList.add("activated");
+            }
+            ChangeID(newId) {
+                this.ID = newId;
             }
         }
 
@@ -74,17 +78,24 @@
 
         function AddToGrid(spacesToAdd) {
             for(let currentSpaceNumber = 0; currentSpaceNumber < spacesToAdd.length; currentSpaceNumber++) {
+                // The ID that'll be applied to the HTML element.
+                newId = "space" + String(currentSpaceNumber);
+
+
                 // Create a new space.
                 let currentSpaceHTML = document.createElement("div");
                 // Make its inner text be a number for now, this will be changed to either be blank, a number, a flag, a question mark, or a mine later on.
                 currentSpaceHTML.innerText = (spacesToAdd[currentSpaceNumber].Contents);
-                currentSpaceHTML.id = "space" + String(currentSpaceNumber);
+                currentSpaceHTML.id = newId;
                 
-                //Change the style to an unrevealed space. 
+                // Change the style to an unrevealed space. 
                 currentSpaceHTML.style.backgroundColor = "#555";
-                
+
+                // Change the ID of the current space object to the correct new ID.
+                // The reason why the ID is set now and not earlier is that the fields are shuffled, so the correct number for the ID is different from before the shuffle.
+                spacesToAdd[currentSpaceNumber].ChangeID(newId);
                 // Add an event listener to trigger the appropriate function to reveal the space.
-                currentSpaceHTML.addEventListener("click", e => spacesToAdd[currentSpaceNumber].Reveal("space" + String(currentSpaceNumber)));
+                currentSpaceHTML.addEventListener("click", e => spacesToAdd[currentSpaceNumber].Reveal());
                 // Also add one to prevent the user from right-clicking (instead a mine will be set).
                 currentSpaceHTML.addEventListener('contextmenu', e => e.preventDefault());
 
