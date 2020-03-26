@@ -105,13 +105,13 @@
                 container.appendChild(currentSpaceHTML).className = "spaces";
                 
                 // Add an event listener to trigger the appropriate function to reveal the space.
-                currentSpaceHTML.addEventListener("click", () => {FirstClickChanges(spacesToAdd, currentSpaceNumber, columns, rows)});
+                currentSpaceHTML.addEventListener("click", () => {SpaceClick(spacesToAdd, currentSpaceNumber, columns, rows)});
                 // Also add one to prevent the user from right-clicking (instead a mine will be set).
                 currentSpaceHTML.addEventListener('contextmenu', e => e.preventDefault());
             }     
         }
 
-        function FirstClickChanges(spaces, spacePosition, columns, rows) {
+        function SpaceClick(spaces, spacePosition, columns, rows) {
             if(firstMove == true) {
                 // If it's the first move then the space that was clicked and all the adjacent ones must be blank. So that a space that isn't adjacent is accessed, several checks need to be made.
 
