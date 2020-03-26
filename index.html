@@ -41,8 +41,13 @@
                 spaceToChange.classList.add("activated");
                 spaceToChange.innerText = this.Contents;
             }
+
             ChangeID(newId) {
                 this.ID = newId;
+            }
+
+            ChangeContents(newContents) {
+                this.Contents = newContents;
             }
         }
 
@@ -77,7 +82,7 @@
             return spacesToReturn;
         }
 
-        function AddToGrid(spacesToAdd) {
+        function AddToGrid(spacesToAdd, columns, rows) {
             for(let currentSpaceNumber = 0; currentSpaceNumber < spacesToAdd.length; currentSpaceNumber++) {
                 // The ID that'll be applied to the HTML element.
                 newId = "space" + String(currentSpaceNumber);
@@ -100,15 +105,116 @@
                 container.appendChild(currentSpaceHTML).className = "spaces";
                 
                 // Add an event listener to trigger the appropriate function to reveal the space.
-                currentSpaceHTML.addEventListener("click", () => {spacesToAdd[currentSpaceNumber].Reveal()});
+                currentSpaceHTML.addEventListener("click", () => {FirstClickChanges(spacesToAdd, currentSpaceNumber, columns, rows)});
                 // Also add one to prevent the user from right-clicking (instead a mine will be set).
                 currentSpaceHTML.addEventListener('contextmenu', e => e.preventDefault());
             }     
         }
 
-        function FirstClickChanges(spaces, idNumber) {
-            currentSpaceHTML = document.getElementById("spaces" + String(idNumber));
-            currentSpaceHTML.innerText = spaces[idNumber].Contents;
+        function FirstClickChanges(spaces, spacePosition, columns, rows) {
+            if(firstMove == true) {
+                // If it's the first move then the space that was clicked and all the adjacent ones must be blank. So that a space that isn't adjacent is accessed, several checks need to be made.
+
+                // Check whether the space that was clicked is in the upper-left corner.
+                if(spacePosition == 0) {
+                    // Change the space and the space to the right.
+                    spaces[spacePosition].ChangeContents(" ");
+                    spaces[spacePosition+1].ChangeContents(" ");
+                    // Change the space below and the one below-right.
+                    spaces[spacePosition+columns].ChangeContents(" ");
+                    spaces[spacePosition+columns+1].ChangeContents(" ");
+                }
+                // Check whether the space that was clicked is in the upper-right corner.
+                else if(spacePosition == columns-1) {
+                    // Change the space and the space to the left.
+                    spaces[spacePosition].ChangeContents(" ");
+                    spaces[spacePosition-1].ChangeContents(" ");
+                    // Change the space below and the one below-left.
+                    spaces[spacePosition+columns].ChangeContents(" ");
+                    spaces[spacePosition+columns-1].ChangeContents(" ");
+                }
+                // Check whether the space that was clicked is in the lower-left corner.
+                else if(spacePosition == rows*columns - columns) {
+                    // Change the space and the space to the right.
+                    spaces[spacePosition].ChangeContents(" ");
+                    spaces[spacePosition+1].ChangeContents(" ");
+                    // Change the space above and the one above-right
+                    spaces[spacePosition-columns].ChangeContents(" ");
+                    spaces[spacePosition-columns+1].ChangeContents(" ");
+                }
+                // Check whether the space that was clicked is in the lower-right corner.
+                else if(spacePosition == rows*columns-1) {
+                    // Change the space and the space to the left.
+                    spaces[spacePosition].ChangeContents(" ");
+                    spaces[spacePosition-1].ChangeContents(" ");
+                    // Change the space above and the one above-left.
+                    spaces[spacePosition-columns].ChangeContents(" ");
+                    spaces[spacePosition-columns-1].ChangeContents(" ");
+                }
+                // Check whether the space that was clicked is on the top row.
+                else if(Math.floor(spacePosition/columns) == 0) {
+                    // Change the space, the space to the left, and the space to the right.
+                    spaces[spacePosition].ChangeContents(" ");
+                    spaces[spacePosition-1].ChangeContents(" ");
+                    spaces[spacePosition+1].ChangeContents(" ");
+                    // Change the space below, the space below-left, and the space below-right.
+                    spaces[spacePosition+columns].ChangeContents(" ");
+                    spaces[spacePosition+columns-1].ChangeContents(" ");
+                    spaces[spacePosition+columns+1].ChangeContents(" ");
+                }
+                // Check whether the space that was clicked is on the right column.
+                else if(spacePosition%columns == columns-1) {
+                    // Change the space and the space to the left.
+                    spaces[spacePosition].ChangeContents(" ");
+                    spaces[spacePosition-1].ChangeContents(" ");
+                    // Change the space above and the one above-left.
+                    spaces[spacePosition-columns].ChangeContents(" ");
+                    spaces[spacePosition-columns-1].ChangeContents(" ");
+                    // Change the space below and the one below-left.
+                    spaces[spacePosition+columns].ChangeContents(" ");
+                    spaces[spacePosition+columns-1].ChangeContents(" ");
+                }
+                // Check whether the space that was clicked is on the bottom row.
+                else if(Math.floor(spacePosition/columns) == rows-1) {
+                    // Change the space, the space to the left, and the space to the right.
+                    spaces[spacePosition].ChangeContents(" ");
+                    spaces[spacePosition-1].ChangeContents(" ");
+                    spaces[spacePosition+1].ChangeContents(" ");
+                    // Change the space above, the space above-left, and the space above-right.
+                    spaces[spacePosition-columns].ChangeContents(" ");
+                    spaces[spacePosition-columns-1].ChangeContents(" ");
+                    spaces[spacePosition-columns+1].ChangeContents(" ");
+                }
+                // Check whether the space that was clicked is on the left column.
+                else if(spacePosition%columns == 0) {
+                    // Change the space and the space to the right.
+                    spaces[spacePosition].ChangeContents(" ");
+                    spaces[spacePosition+1].ChangeContents(" ");
+                    // Change the space above and the one above-right.
+                    spaces[spacePosition-columns].ChangeContents(" ");
+                    spaces[spacePosition-columns+1].ChangeContents(" ");
+                    // Change the space below and the one below-right.
+                    spaces[spacePosition+columns].ChangeContents(" ");
+                    spaces[spacePosition+columns+1].ChangeContents(" ");
+                }
+                else {
+                    // Change the space, the space to the left, and the space to the right.
+                    spaces[spacePosition].ChangeContents(" ");
+                    spaces[spacePosition-1].ChangeContents(" ");
+                    spaces[spacePosition+1].ChangeContents(" ");
+                    // Change the space above, the space above-left, and the space above-right.
+                    spaces[spacePosition-columns].ChangeContents(" ");
+                    spaces[spacePosition-columns-1].ChangeContents(" ");
+                    spaces[spacePosition-columns+1].ChangeContents(" ");
+                    // Change the space below, the space below-left, and the space below-right.
+                    spaces[spacePosition+columns].ChangeContents(" ");
+                    spaces[spacePosition+columns-1].ChangeContents(" ");
+                    spaces[spacePosition+columns+1].ChangeContents(" ");
+                }
+                firstMove = false;
+            }
+            // Whether or not it's the first turn, reveal the current space.
+            spaces[spacePosition].Reveal();
         }
 
         function ShowAll(spacesToShow) {
@@ -139,8 +245,11 @@
 
         const container = document.getElementById("gameContainer");
         let spaces = InitialiseGrid(16, 16);
-        AddToGrid(spaces);
+        AddToGrid(spaces, 16, 16);
         document.getElementById("secretShowAll").addEventListener("click", () => {ShowAll(spaces)});
+
+        // A global variable is used here to keep track of whether the current move is the first one to have been made.
+        var firstMove = true;
     </script>
 </body>
 </html>
