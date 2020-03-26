@@ -1,5 +1,5 @@
 /* Import PT Sans if the user doesn't have the font already. */
-@import url('https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400&display=swap");
 
 /* === Main website styling === */
 /* Cancel out the margin and padding around the body of the page. */

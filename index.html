@@ -19,12 +19,12 @@
         <div id="gameContainer">
         </div>
         <br>
-        <p>Made by Patrick Ausel.</p>
+        <p>Made by Patrick <span id="secretShowAll">Ausel.</span></p>
     </main>
 
     <script>
         class Space {
-            constructor(activated = false, contents = " ", id = "spacesXXX") {
+            constructor(activated = false, contents = " ", id = "spaceXXX") {
                 this.Activated = activated;
                 // The contents can either be " " or "M" which stand for an empty space and a mine respectively.
                 this.Contents = contents;
@@ -39,6 +39,7 @@
                 let spaceToChange = document.getElementById(this.ID);
                 spaceToChange.style.backgroundColor = "#333";
                 spaceToChange.classList.add("activated");
+                spaceToChange.innerText = this.Contents;
             }
             ChangeID(newId) {
                 this.ID = newId;
@@ -85,7 +86,7 @@
                 // Create a new space.
                 let currentSpaceHTML = document.createElement("div");
                 // Make its inner text be a number for now, this will be changed to either be blank, a number, a flag, a question mark, or a mine later on.
-                currentSpaceHTML.innerText = (spacesToAdd[currentSpaceNumber].Contents);
+                currentSpaceHTML.innerText = ("");
                 currentSpaceHTML.id = newId;
                 
                 // Change the style to an unrevealed space. 
@@ -94,14 +95,26 @@
                 // Change the ID of the current space object to the correct new ID.
                 // The reason why the ID is set now and not earlier is that the fields are shuffled, so the correct number for the ID is different from before the shuffle.
                 spacesToAdd[currentSpaceNumber].ChangeID(newId);
-                // Add an event listener to trigger the appropriate function to reveal the space.
-                currentSpaceHTML.addEventListener("click", e => spacesToAdd[currentSpaceNumber].Reveal());
-                // Also add one to prevent the user from right-clicking (instead a mine will be set).
-                currentSpaceHTML.addEventListener('contextmenu', e => e.preventDefault());
 
                 // Actually append this created space onto the grid.
                 container.appendChild(currentSpaceHTML).className = "spaces";
+                
+                // Add an event listener to trigger the appropriate function to reveal the space.
+                currentSpaceHTML.addEventListener("click", () => {spacesToAdd[currentSpaceNumber].Reveal()});
+                // Also add one to prevent the user from right-clicking (instead a mine will be set).
+                currentSpaceHTML.addEventListener('contextmenu', e => e.preventDefault());
             }     
+        }
+
+        function FirstClickChanges(spaces, idNumber) {
+            currentSpaceHTML = document.getElementById("spaces" + String(idNumber));
+            currentSpaceHTML.innerText = spaces[idNumber].Contents;
+        }
+
+        function ShowAll(spacesToShow) {
+            for(let currentSpaceNumber = 0; currentSpaceNumber < spacesToShow.length; currentSpaceNumber++) {
+                spacesToShow[currentSpaceNumber].Reveal();
+            }
         }
 
         // Use the Fisher-Yates shuffle algorithm, minorly modified from the implementation available at https://github.com/Daplie/knuth-shuffle . Licensed under the Apache License 2.0 available at http://www.apache.org/licenses/ .
@@ -127,6 +140,7 @@
         const container = document.getElementById("gameContainer");
         let spaces = InitialiseGrid(16, 16);
         AddToGrid(spaces);
+        document.getElementById("secretShowAll").addEventListener("click", () => {ShowAll(spaces)});
     </script>
 </body>
 </html>
