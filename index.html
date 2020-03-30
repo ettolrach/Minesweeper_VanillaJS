@@ -213,48 +213,8 @@
                 }
                 firstMove = false;
             }
-
-            // If the space hasn't already been revealed, reveal it.
-            if(spaces[spacePosition].Revealed == false) {
-                spaces[spacePosition].Reveal();
-
-                // If this space is blank, then it should reveal all adjacent spaces.
-
-                // As above, do this if the space is in the upper-left corner.
-                if(spacePosition == 0) {
-                    // Reveal the space and the space to the right.
-                    SpaceClick(spaces, spacePosition+1, columns, rows);
-                    // Reveal the space below and the one below-right.
-                    SpaceClick(spaces, spacePosition+columns, columns, rows);
-                    SpaceClick(spaces, spacePosition+columns+1, columns, rows);
-                }
-
-                // Check all surrounding spaces if it's a space that's in the middle.
-                if(spaces[spacePosition].Contents == " ") {
-                    // Recursively call the function again for the spaces to the left, right.
-                    SpaceClick(spaces, spacePosition-1, columns, rows);
-                    SpaceClick(spaces, spacePosition+1, columns, rows);
-                    // Do the same for the above, above-left, and above-right spaces.
-                    SpaceClick(spaces, spacePosition-columns, columns, rows);
-                    SpaceClick(spaces, spacePosition-columns-1, columns, rows);
-                    SpaceClick(spaces, spacePosition-columns+1, columns, rows);
-                    // And do the same for the below, below-left, and below-right spaces.
-                    SpaceClick(spaces, spacePosition+columns, columns, rows);
-                    SpaceClick(spaces, spacePosition+columns-1, columns, rows);
-                    SpaceClick(spaces, spacePosition+columns+1, columns, rows);
-                }
-            }
-            
-            /*
-            // First make sure that the space that's checked next hasn't already be revealed.
-            switch(false) {
-                // Recursively call the function again for the spaces to the left, right.
-                case spaces[spacePosition-1].Revealed:
-                    SpaceClick(spaces, spacePosition-1, columns, rows);
-                case spaces[spacePosition+1].Revealed:
-                    SpaceClick(spaces, spacePosition+1, columns, rows);
-            }*/
-
+            // Whether or not it's the first turn, reveal the current space.
+            spaces[spacePosition].Reveal();
         }
 
         function ShowAll(spacesToShow) {
