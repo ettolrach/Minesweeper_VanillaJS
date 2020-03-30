@@ -112,6 +112,9 @@
         }
 
         function SpaceClick(spaces, spacePosition, columns, rows) {
+            // Check if the space is already revealed, in which case, do nothing.
+            if(spaces[spacePosition].Revealed == true) return;
+
             if(firstMove == true) {
                 // If it's the first move then the space that was clicked and all the adjacent ones must be blank. So that a space that isn't adjacent is accessed, several checks need to be made.
 
@@ -213,8 +216,100 @@
                 }
                 firstMove = false;
             }
+            
             // Whether or not it's the first turn, reveal the current space.
             spaces[spacePosition].Reveal();
+
+            // Reveal any adjacent spaces. It's important to, similar to above, make sure to find out where the adjacent spaces are. You don't want to check the space to the left if you're in the upper-left corner.
+            // First check if the space is blank, if it isn't then the surroundings shouldn't be revealed.
+            if(spaces[spacePosition].Contents == " ")
+                // If upper-left corner.
+                if(spacePosition == 0) {
+                    // Reveal space to the right.
+                    SpaceClick(spaces, spacePosition+1, columns, rows);
+                    // Change the space below and the one below-right.
+                    SpaceClick(spaces, spacePosition+columns, columns, rows);
+                    SpaceClick(spaces, spacePosition+columns+1, columns, rows);
+                }
+                // If upper-right corner.
+                else if(spacePosition == columns-1) {
+                    // Reveal the space to the left.
+                    SpaceClick(spaces, spacePosition-1, columns, rows);
+                    // Reveal the space below-left.
+                    SpaceClick(spaces, spacePosition+columns, columns, rows);
+                    SpaceClick(spaces, spacePosition+columns-1, columns, rows);
+                }
+                // If lower-left corner.
+                else if(spacePosition == rows*columns - columns) {
+                    // Reveal the space to the right.
+                    SpaceClick(spaces, spacePosition+1, columns, rows);
+                    // Reveal the space below and the one below-right
+                    SpaceClick(spaces, spacePosition-columns, columns, rows);
+                    SpaceClick(spaces, spacePosition-columns+1, columns, rows);
+                }
+                // If lower-right corner.
+                else if(spacePosition == rows*columns-1) {
+                    // Reveal the space to the left.
+                    SpaceClick(spaces, spacePosition-1, columns, rows);
+                    // Reveal the space above-left and the one above.
+                    SpaceClick(spaces, spacePosition-columns-1, columns, rows);
+                    SpaceClick(spaces, spacePosition-columns, columns, rows);
+                }
+                // If top row.
+                else if(Math.floor(spacePosition/columns) == 0) {
+                    // Reveal the space to the left and the one to the right.
+                    SpaceClick(spaces, spacePosition-1, columns, rows);
+                    SpaceClick(spaces, spacePosition+1, columns, rows);
+                    // Change the space below-left, the space below, and the space below-right.
+                    SpaceClick(spaces, spacePosition+columns-1, columns, rows);
+                    SpaceClick(spaces, spacePosition+columns, columns, rows);
+                    SpaceClick(spaces, spacePosition+columns+1, columns, rows);
+                }
+                // If right column.
+                else if(spacePosition%columns == columns-1) {
+                    // Reveal the space to the left.
+                    SpaceClick(spaces, spacePosition-1, columns, rows);
+                    // Reveal the space above-left and the one above.
+                    SpaceClick(spaces, spacePosition-columns-1, columns, rows);
+                    SpaceClick(spaces, spacePosition-columns, columns, rows);
+                    // Change the space below-left, and the one below.
+                    SpaceClick(spaces, spacePosition+columns-1, columns, rows);
+                    SpaceClick(spaces, spacePosition+columns, columns, rows);
+                }
+                // If bottom row.
+                else if(Math.floor(spacePosition/columns) == rows-1) {
+                    // Reveal the space to the left and the one to the right.
+                    SpaceClick(spaces, spacePosition-1, columns, rows);
+                    SpaceClick(spaces, spacePosition+1, columns, rows);
+                    // Change the space above-left, the space above, and the space above-right.
+                    SpaceClick(spaces, spacePosition-columns-1, columns, rows);
+                    SpaceClick(spaces, spacePosition-columns, columns, rows);
+                    SpaceClick(spaces, spacePosition-columns+1, columns, rows);
+                }
+                // If left column.
+                else if(spacePosition%columns == 0) {
+                    // Reveal the space to the right.
+                    SpaceClick(spaces, spacePosition-1, columns, rows);
+                    // Reveal the space above and the one above-right.
+                    SpaceClick(spaces, spacePosition-columns, columns, rows);
+                    SpaceClick(spaces, spacePosition-columns+1, columns, rows);
+                    // Reveal the space below and the one below-right.
+                    SpaceClick(spaces, spacePosition+columns, columns, rows);
+                    SpaceClick(spaces, spacePosition+columns+1, columns, rows);
+                }
+                else {
+                    // Recursively call the function again for the spaces to the left, right.
+                    SpaceClick(spaces, spacePosition-1, columns, rows);
+                    SpaceClick(spaces, spacePosition+1, columns, rows);
+                    // Do the same for the above, above-left, and above-right spaces.
+                    SpaceClick(spaces, spacePosition-columns, columns, rows);
+                    SpaceClick(spaces, spacePosition-columns-1, columns, rows);
+                    SpaceClick(spaces, spacePosition-columns+1, columns, rows);
+                    // And do the same for the below, below-left, and below-right spaces.
+                    SpaceClick(spaces, spacePosition+columns, columns, rows);
+                    SpaceClick(spaces, spacePosition+columns-1, columns, rows);
+                    SpaceClick(spaces, spacePosition+columns+1, columns, rows);
+                }
         }
 
         function ShowAll(spacesToShow) {
