@@ -24,15 +24,15 @@
 
     <script>
         class Space {
-            constructor(activated = false, contents = " ", id = "spaceXXX") {
-                this.Activated = activated;
+            constructor(revealed = false, contents = " ", id = "spaceXXX") {
+                this.Revealed = revealed;
                 // The contents can either be " " or "M" which stand for an empty space and a mine respectively.
                 this.Contents = contents;
                 this.ID = id;
             }
 
             Reveal() {
-                this.Activated = true;
+                this.Revealed = true;
                 if(this.Contents == "M") {
                     // GAME OVER!!!
                 }
