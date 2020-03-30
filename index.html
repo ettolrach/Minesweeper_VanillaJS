@@ -115,8 +115,44 @@
             if(firstMove == true) {
                 // If it's the first move then the space that was clicked and all the adjacent ones must be blank. So that a space that isn't adjacent is accessed, several checks need to be made.
 
+                // Check whether the space that was clicked is in the upper-left corner.
+                if(spacePosition == 0) {
+                    // Change the space and the space to the right.
+                    spaces[spacePosition].ChangeContents(" ");
+                    spaces[spacePosition+1].ChangeContents(" ");
+                    // Change the space below and the one below-right.
+                    spaces[spacePosition+columns].ChangeContents(" ");
+                    spaces[spacePosition+columns+1].ChangeContents(" ");
+                }
+                // Check whether the space that was clicked is in the upper-right corner.
+                else if(spacePosition == columns-1) {
+                    // Change the space and the space to the left.
+                    spaces[spacePosition].ChangeContents(" ");
+                    spaces[spacePosition-1].ChangeContents(" ");
+                    // Change the space below and the one below-left.
+                    spaces[spacePosition+columns].ChangeContents(" ");
+                    spaces[spacePosition+columns-1].ChangeContents(" ");
+                }
+                // Check whether the space that was clicked is in the lower-left corner.
+                else if(spacePosition == rows*columns - columns) {
+                    // Change the space and the space to the right.
+                    spaces[spacePosition].ChangeContents(" ");
+                    spaces[spacePosition+1].ChangeContents(" ");
+                    // Change the space above and the one above-right
+                    spaces[spacePosition-columns].ChangeContents(" ");
+                    spaces[spacePosition-columns+1].ChangeContents(" ");
+                }
+                // Check whether the space that was clicked is in the lower-right corner.
+                else if(spacePosition == rows*columns-1) {
+                    // Change the space and the space to the left.
+                    spaces[spacePosition].ChangeContents(" ");
+                    spaces[spacePosition-1].ChangeContents(" ");
+                    // Change the space above and the one above-left.
+                    spaces[spacePosition-columns].ChangeContents(" ");
+                    spaces[spacePosition-columns-1].ChangeContents(" ");
+                }
                 // Check whether the space that was clicked is on the top row.
-                if(Math.floor(spacePosition/columns) == 0) {
+                else if(Math.floor(spacePosition/columns) == 0) {
                     // Change the space, the space to the left, and the space to the right.
                     spaces[spacePosition].ChangeContents(" ");
                     spaces[spacePosition-1].ChangeContents(" ");
@@ -161,66 +197,20 @@
                     spaces[spacePosition+columns].ChangeContents(" ");
                     spaces[spacePosition+columns+1].ChangeContents(" ");
                 }
-
-                // To improve performance, perform the rest of the checks in a switch/case block.
                 else {
-                    switch(spacePosition) {
-                    // Check whether the space that was clicked is in the upper-left corner.
-                    case 0:
-                        // Change the space and the space to the right.
-                        spaces[spacePosition].ChangeContents(" ");
-                        spaces[spacePosition+1].ChangeContents(" ");
-                        // Change the space below and the one below-right.
-                        spaces[spacePosition+columns].ChangeContents(" ");
-                        spaces[spacePosition+columns+1].ChangeContents(" ");
-                        break;
-
-                    // Check whether the space that was clicked is in the upper-right corner.
-                    case columns-1:
-                        // Change the space and the space to the left.
-                        spaces[spacePosition].ChangeContents(" ");
-                        spaces[spacePosition-1].ChangeContents(" ");
-                        // Change the space below and the one below-left.
-                        spaces[spacePosition+columns].ChangeContents(" ");
-                        spaces[spacePosition+columns-1].ChangeContents(" ");
-                        break;
-
-                    // Check whether the space that was clicked is in the lower-left corner.
-                    case columns:
-                        // Change the space and the space to the right.
-                        spaces[spacePosition].ChangeContents(" ");
-                        spaces[spacePosition+1].ChangeContents(" ");
-                        // Change the space above and the one above-right
-                        spaces[spacePosition-columns].ChangeContents(" ");
-                        spaces[spacePosition-columns+1].ChangeContents(" ");
-                        break;
-
-                    // Check whether the space that was clicked is in the lower-right corner.
-                    case rows*columns-1:
-                        // Change the space and the space to the left.
-                        spaces[spacePosition].ChangeContents(" ");
-                        spaces[spacePosition-1].ChangeContents(" ");
-                        // Change the space above and the one above-left.
-                        spaces[spacePosition-columns].ChangeContents(" ");
-                        spaces[spacePosition-columns-1].ChangeContents(" ");
-                        break;
-                        
-                    // Finally, run this if the space is in the middle.
-                    default:
-                        // Change the space, the space to the left, and the space to the right.
-                        spaces[spacePosition].ChangeContents(" ");
-                        spaces[spacePosition-1].ChangeContents(" ");
-                        spaces[spacePosition+1].ChangeContents(" ");
-                        // Change the space above, the space above-left, and the space above-right.
-                        spaces[spacePosition-columns].ChangeContents(" ");
-                        spaces[spacePosition-columns-1].ChangeContents(" ");
-                        spaces[spacePosition-columns+1].ChangeContents(" ");
-                        // Change the space below, the space below-left, and the space below-right.
-                        spaces[spacePosition+columns].ChangeContents(" ");
-                        spaces[spacePosition+columns-1].ChangeContents(" ");
-                        spaces[spacePosition+columns+1].ChangeContents(" ");
+                    // Change the space, the space to the left, and the space to the right.
+                    spaces[spacePosition].ChangeContents(" ");
+                    spaces[spacePosition-1].ChangeContents(" ");
+                    spaces[spacePosition+1].ChangeContents(" ");
+                    // Change the space above, the space above-left, and the space above-right.
+                    spaces[spacePosition-columns].ChangeContents(" ");
+                    spaces[spacePosition-columns-1].ChangeContents(" ");
+                    spaces[spacePosition-columns+1].ChangeContents(" ");
+                    // Change the space below, the space below-left, and the space below-right.
+                    spaces[spacePosition+columns].ChangeContents(" ");
+                    spaces[spacePosition+columns-1].ChangeContents(" ");
+                    spaces[spacePosition+columns+1].ChangeContents(" ");
                 }
-                
                 firstMove = false;
             }
             // Whether or not it's the first turn, reveal the current space.
