@@ -4,55 +4,55 @@
 /* === Main website styling === */
 /* Cancel out the margin and padding around the body of the page. */
 html, body {
-    margin: 0;
-    padding: 0;
+	margin: 0;
+	padding: 0;
 }
 body {
-    background-color: #222;
+	background-color: #222;
 }
 * {
-    color: white;
-    font-family: "PT Sans";
+	color: white;
+	font-family: "PT Sans";
 }
 .titles {
-    margin: 0 auto 0.2vw auto;
-    padding-top: 0;
-    text-align: center;
+	margin: 0 auto 0.2vw auto;
+	padding-top: 0;
+	text-align: center;
 }
 main {
-    width: 80%;
-    margin: 1vh auto 0 auto;
+	width: 80%;
+	margin: 1vh auto 0 auto;
 }
 
 /* === Game styling === */
 /* Game grid */
 /* Define a variable that holds the number of rows/columns - this will be changed by the JS. */
 :root {
-    --gridColumns: 1;
-    --gridRows: 1;
+	--gridColumns: 1;
+	--gridRows: 1;
 }
 /* Make the grid display each cell*/
 #gameContainer {
-    display: grid;
-    width: 80vh;
-    height: 80vh;
-    gap: 2px;
-    grid-template-columns: repeat(var(--gridColumns), 1fr);
-    grid-template-rows: repeat(var(--gridRows), 1fr);
-    margin: 0 auto;
-    font-size: 2.5vh;
+	display: grid;
+	width: 80vh;
+	height: 80vh;
+	gap: 2px;
+	grid-template-columns: repeat(var(--gridColumns), 1fr);
+	grid-template-rows: repeat(var(--gridRows), 1fr);
+	margin: 0 auto;
+	font-size: 2.5vh;
 }
 .spaces {
-    border: 1px solid  #666;
-    /* Center its contents. */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 2px;
+	border: 1px solid  #666;
+	/* Center its contents. */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 2px;
 }
 .spaces:hover:not(.activated) {
-    background-color: #444 !important;
+	background-color: #444 !important;
 }
 .spaces:active:not(.activated) {
-    background-color: #222 !important;
+	background-color: #222 !important;
 }
