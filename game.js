@@ -264,9 +264,5 @@ function StartGame(width, height, container) {
 	container.style.display = "grid";
 }
 
-const container = document.getElementById("gameContainer");
-StartGame(16, 16, container);
-
-
 // A global variable is used here to keep track of whether the current move is the first one to have been made.
 var firstMove = true;
