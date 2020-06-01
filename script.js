@@ -152,6 +152,8 @@ function SpaceClick(spaces, x, y, columns, rows) {
 }
 
 function FloodUncover(spaces, x, y, columns, rows) {
+    // If it's out of bounds, then return.
+    if (x > (rows-1) || y > (columns-1) || x < 0 || y < 0) return;
     // If this space has already been revealed, then there's no need to continue.
     if (spaces[y][x].Revealed == true) return;
     // If this space is a number, then reveal but do not continue revealing.
@@ -159,8 +161,6 @@ function FloodUncover(spaces, x, y, columns, rows) {
         spaces[y][x].Reveal();
         return;
     }
-    // If it's out of bounds, then return.
-    if (x > (rows-1) || y > (columns-1) || x < 0 || y < 0) return;
     spaces[y][x].Reveal();
     // Go clockwise around the current space revealing all adjacent ones.
     FloodUncover(spaces, x, y-1, columns, rows);
