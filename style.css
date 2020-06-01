@@ -36,7 +36,7 @@ main {
 }
 /* Make the grid display each cell*/
 #gameContainer {
-	display: grid;
+	display: none;
 	width: 80vh;
 	height: 80vh;
 	gap: 2px;

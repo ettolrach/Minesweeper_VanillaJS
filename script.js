@@ -247,19 +247,26 @@ function Shuffle(array) {
 	return array;
 }
 
-const container = document.getElementById("gameContainer");
-let spaces = InitialiseGrid(16, 16);
-AddToGrid(spaces, 16, 16);
-let spacesRevealed = 0;
-let mines = 0;
-for (let currentRow = 0; currentRow < 16; currentRow++) {
-	for (let currentColumn = 0; currentColumn < 16; currentColumn++) {
-		if (spaces[currentRow][currentColumn].Contents == "M") {
-			mines++;
+function StartGame(width, height, container) {
+	container
+	let spaces = InitialiseGrid(width, height);
+	AddToGrid(spaces, width, height);
+	let spacesRevealed = 0;
+	let mines = 0;
+	for (let currentRow = 0; currentRow < height; currentRow++) {
+		for (let currentColumn = 0; currentColumn < width; currentColumn++) {
+			if (spaces[currentRow][currentColumn].Contents == "M") {
+				mines++;
+			}
 		}
 	}
+	document.getElementById("secretShowAll").addEventListener("click", () => { ShowAll(spaces, width, height); });
+	container.style.display = "grid";
 }
-document.getElementById("secretShowAll").addEventListener("click", () => {ShowAll(spaces, 16, 16);});
+
+const container = document.getElementById("gameContainer");
+StartGame(16, 16, container);
+
 
 // A global variable is used here to keep track of whether the current move is the first one to have been made.
 var firstMove = true;
