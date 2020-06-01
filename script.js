@@ -1,20 +1,23 @@
 class Space {
-    constructor(revealed = false, contentsToGive = " ", id = "spaceXXX") {
+    constructor(revealed = false, contentsToGive = " ", id = "spaceXXX", flag="") {
         this.Revealed = revealed;
         // The contents can either be " " or "M" which stand for an empty space and a mine respectively.
         this.Contents = contentsToGive;
         this.ID = id;
+        this.Flag = flag;
     }
 
     Reveal() {
         this.Revealed = true;
-        if(this.Contents == "M") {
-            // GAME OVER!!!
-        }
         let spaceToChange = document.getElementById(this.ID);
+        if(this.Contents == "M") {
+            spaceToChange.innerHTML = "<img src='mine.svg' style='width:95%'>";
+        }
+        else {
+            spaceToChange.innerText = this.Contents;
+        }
         spaceToChange.style.backgroundColor = "#333";
         spaceToChange.classList.add("activated");
-        spaceToChange.innerText = this.Contents;
     }
 
     ChangeID(newId) {
@@ -23,6 +26,9 @@ class Space {
 
     ChangeContents(newContents) {
         this.Contents = newContents;
+    }
+    ChangeFlag(newFlag) {
+        this.Flag = newFlag;
     }
 }
 
@@ -99,8 +105,30 @@ function AddToGrid(spacesToAdd, columns, rows) {
             // Add an event listener to trigger the appropriate function to reveal the space.
             currentSpaceHTML.addEventListener("click", () => {SpaceClick(spacesToAdd, currentColumn, currentRow, columns, rows)});
             // Also add one to prevent the user from right-clicking (instead a mine will be set).
-            currentSpaceHTML.addEventListener('contextmenu', e => e.preventDefault());
+            currentSpaceHTML.addEventListener("contextmenu", e => {PlaceFlag(spacesToAdd, currentColumn, currentRow, columns, rows); e.preventDefault()});
+            // Prevent the the context menu from appearing when the background of the grid is clicked.
+            document.getElementById("gameContainer").addEventListener("contextmenu", e => {e.preventDefault()});
         }
+    }
+}
+
+function PlaceFlag(spaces, x, y, columns, rows) {
+    if (spaces[y][x].Revealed == true) return;
+    switch (spaces[y][x].Flag) {
+        case "":
+            document.getElementById(spaces[y][x].ID).innerHTML = "<img src='flag.svg' style='width:65%;'>";
+            spaces[y][x].ChangeFlag("F");
+            break;
+        case "F":
+            document.getElementById(spaces[y][x].ID).innerHTML = "<p style='color: lightblue; padding: 0; margin: 0;'>?</p>";
+            spaces[y][x].ChangeFlag("?");
+            break;
+        case "?":
+            document.getElementById(spaces[y][x].ID).innerHTML = "";
+            spaces[y][x].ChangeFlag("");
+            break;
+        default:
+            break;
     }
 }
 

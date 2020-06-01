@@ -34,11 +34,13 @@ main {
 /* Make the grid display each cell*/
 #gameContainer {
     display: grid;
-    width: 100%;
+    width: 80vh;
     height: 80vh;
     gap: 2px;
     grid-template-columns: repeat(var(--gridColumns), 1fr);
     grid-template-rows: repeat(var(--gridRows), 1fr);
+    margin: 0 auto;
+    font-size: 2.5vh;
 }
 .spaces {
     border: 1px solid  #666;
