@@ -1,8 +1,8 @@
 class Space {
-    constructor(revealed = false, contents = " ", id = "spaceXXX") {
+    constructor(revealed = false, contentsToGive = " ", id = "spaceXXX") {
         this.Revealed = revealed;
         // The contents can either be " " or "M" which stand for an empty space and a mine respectively.
-        this.Contents = contents;
+        this.Contents = contentsToGive;
         this.ID = id;
     }
 
@@ -40,256 +40,144 @@ function InitialiseGrid(columns, rows) {
     // Add as many spaces as required.
     // Keep a running total of the number of mines.
     minesNumber = 0;
-    for (let spacesToAppend = 0; spacesToAppend < columns*rows; spacesToAppend++) {
-        // Decide whether this space should be a mine or not. Let the initial probability of the space being a mine be 1/4. Then, if there's not already too many mines, then make it a mine (in other words, if 1/3 of the board is filled with mines, then don't add any more). Otherwise, make it an empty space.
-        if(Math.floor(Math.random()*4) == 0 && minesNumber <= columns*rows/3) {
-            spacesToReturn.push(new Space(false, "M"));
-            minesNumber++;
+    // Make a 2D list, so this outer loop is for the rows.
+    for (let currentRow = 0; currentRow < rows; currentRow++) {
+        let rowToAppend = [];
+        for (let currentColumn = 0; currentColumn < columns; currentColumn++) {
+            // Decide whether this space should be a mine or not. Let the initial probability of the space being a mine be 1/4. Then, if there's not already too many mines, then make it a mine (in other words, if 1/3 of the board is filled with mines, then don't add any more). Otherwise, make it an empty space.
+            if(Math.floor(Math.random()*4) == 0 && minesNumber <= columns*rows/3) {
+                rowToAppend.push(new Space(false, "M"));
+                minesNumber++;
+            }
+            else {
+                rowToAppend.push(new Space(false, " "));
+            }
         }
-        else {
-            spacesToReturn.push(new Space(false, " "));
-        }
+        
+        spacesToReturn.push(rowToAppend);
     }
 
-    // Shuffle the array to make sure that there are no mines at the end of the array.
+    // Shuffle the array to make sure that the mines are spread evenly.
     spacesToReturn = Shuffle(spacesToReturn);
 
     return spacesToReturn;
 }
 
-function AddToGrid(spacesToAdd, columns, rows) {
-    for(let currentSpaceNumber = 0; currentSpaceNumber < spacesToAdd.length; currentSpaceNumber++) {
-        // The ID that'll be applied to the HTML element.
-        newId = "space" + String(currentSpaceNumber);
+function IsMine(spaces, x, y, columns, rows) {
+    if (x < 0 || y < 0) return;
+    if (x >= columns || y >= rows) return;
+    if (spaces[y][x].Contents == "M") {
+        return true;
+    }
+    else {
+        return false;
+    }
 
-
-        // Create a new space.
-        let currentSpaceHTML = document.createElement("div");
-        // Make its inner text be a number for now, this will be changed to either be blank, a number, a flag, a question mark, or a mine later on.
-        currentSpaceHTML.innerText = ("");
-        currentSpaceHTML.id = newId;
-        
-        // Change the style to an unrevealed space. 
-        currentSpaceHTML.style.backgroundColor = "#555";
-
-        // Change the ID of the current space object to the correct new ID.
-        // The reason why the ID is set now and not earlier is that the fields are shuffled, so the correct number for the ID is different from before the shuffle.
-        spacesToAdd[currentSpaceNumber].ChangeID(newId);
-
-        // Actually append this created space onto the grid.
-        container.appendChild(currentSpaceHTML).className = "spaces";
-        
-        // Add an event listener to trigger the appropriate function to reveal the space.
-        currentSpaceHTML.addEventListener("click", () => {SpaceClick(spacesToAdd, currentSpaceNumber, columns, rows)});
-        // Also add one to prevent the user from right-clicking (instead a mine will be set).
-        currentSpaceHTML.addEventListener('contextmenu', e => e.preventDefault());
-    }     
 }
 
-function SpaceClick(spaces, spacePosition, columns, rows) {
-    // Check if the space is already revealed, in which case, do nothing.
-    if(spaces[spacePosition].Revealed == true) return;
+function AddToGrid(spacesToAdd, columns, rows) {
+    for (let currentRow = 0; currentRow < rows; currentRow++) {
+        for (let currentColumn = 0; currentColumn < columns; currentColumn++) {
+            // The ID that'll be applied to the HTML element.
+            let newId = "space" + String(currentRow * columns + currentColumn);
 
+            // Change the ID of the current space object to the correct new ID.
+            // The reason why the ID is set now and not earlier is that the fields are shuffled, so the correct number for the ID is different from before the shuffle.
+            spacesToAdd[currentRow][currentColumn].ChangeID(newId);
+
+            // Create a new space.
+            let currentSpaceHTML = document.createElement("div");
+            // Make its inner text be nothing for now, this will be changed to either be blank, a number, a flag, a question mark, or a mine later on.
+            currentSpaceHTML.innerText = ("");
+            currentSpaceHTML.id = newId;
+            // Change the style to an unrevealed space. 
+            currentSpaceHTML.style.backgroundColor = "#555";
+
+            // Actually append this created space onto the grid.
+            container.appendChild(currentSpaceHTML).className = "spaces";
+        
+            // Add an event listener to trigger the appropriate function to reveal the space.
+            currentSpaceHTML.addEventListener("click", () => {SpaceClick(spacesToAdd, currentColumn, currentRow, columns, rows)});
+            // Also add one to prevent the user from right-clicking (instead a mine will be set).
+            currentSpaceHTML.addEventListener('contextmenu', e => e.preventDefault());
+        }
+    }
+}
+
+function ChangeValidContents(spaces, x, y, columns, rows, replaceWith) {
+    if (x < 0 || y < 0) return;
+    if (x >= columns || y >= rows) return;
+    spaces[y][x].ChangeContents(replaceWith);
+}
+
+function SpaceClick(spaces, x, y, columns, rows) {
     if(firstMove == true) {
-        // If it's the first move then the space that was clicked and all the adjacent ones must be blank. So that a space that isn't adjacent is accessed, several checks need to be made.
-
-        // Check whether the space that was clicked is in the upper-left corner.
-        if(spacePosition == 0) {
-            // Change the space and the space to the right.
-            spaces[spacePosition].ChangeContents(" ");
-            spaces[spacePosition+1].ChangeContents(" ");
-            // Change the space below and the one below-right.
-            spaces[spacePosition+columns].ChangeContents(" ");
-            spaces[spacePosition+columns+1].ChangeContents(" ");
-        }
-        // Check whether the space that was clicked is in the upper-right corner.
-        else if(spacePosition == columns-1) {
-            // Change the space and the space to the left.
-            spaces[spacePosition].ChangeContents(" ");
-            spaces[spacePosition-1].ChangeContents(" ");
-            // Change the space below and the one below-left.
-            spaces[spacePosition+columns].ChangeContents(" ");
-            spaces[spacePosition+columns-1].ChangeContents(" ");
-        }
-        // Check whether the space that was clicked is in the lower-left corner.
-        else if(spacePosition == rows*columns - columns) {
-            // Change the space and the space to the right.
-            spaces[spacePosition].ChangeContents(" ");
-            spaces[spacePosition+1].ChangeContents(" ");
-            // Change the space above and the one above-right
-            spaces[spacePosition-columns].ChangeContents(" ");
-            spaces[spacePosition-columns+1].ChangeContents(" ");
-        }
-        // Check whether the space that was clicked is in the lower-right corner.
-        else if(spacePosition == rows*columns-1) {
-            // Change the space and the space to the left.
-            spaces[spacePosition].ChangeContents(" ");
-            spaces[spacePosition-1].ChangeContents(" ");
-            // Change the space above and the one above-left.
-            spaces[spacePosition-columns].ChangeContents(" ");
-            spaces[spacePosition-columns-1].ChangeContents(" ");
-        }
-        // Check whether the space that was clicked is on the top row.
-        else if(Math.floor(spacePosition/columns) == 0) {
-            // Change the space, the space to the left, and the space to the right.
-            spaces[spacePosition].ChangeContents(" ");
-            spaces[spacePosition-1].ChangeContents(" ");
-            spaces[spacePosition+1].ChangeContents(" ");
-            // Change the space below, the space below-left, and the space below-right.
-            spaces[spacePosition+columns].ChangeContents(" ");
-            spaces[spacePosition+columns-1].ChangeContents(" ");
-            spaces[spacePosition+columns+1].ChangeContents(" ");
-        }
-        // Check whether the space that was clicked is on the right column.
-        else if(spacePosition%columns == columns-1) {
-            // Change the space and the space to the left.
-            spaces[spacePosition].ChangeContents(" ");
-            spaces[spacePosition-1].ChangeContents(" ");
-            // Change the space above and the one above-left.
-            spaces[spacePosition-columns].ChangeContents(" ");
-            spaces[spacePosition-columns-1].ChangeContents(" ");
-            // Change the space below and the one below-left.
-            spaces[spacePosition+columns].ChangeContents(" ");
-            spaces[spacePosition+columns-1].ChangeContents(" ");
-        }
-        // Check whether the space that was clicked is on the bottom row.
-        else if(Math.floor(spacePosition/columns) == rows-1) {
-            // Change the space, the space to the left, and the space to the right.
-            spaces[spacePosition].ChangeContents(" ");
-            spaces[spacePosition-1].ChangeContents(" ");
-            spaces[spacePosition+1].ChangeContents(" ");
-            // Change the space above, the space above-left, and the space above-right.
-            spaces[spacePosition-columns].ChangeContents(" ");
-            spaces[spacePosition-columns-1].ChangeContents(" ");
-            spaces[spacePosition-columns+1].ChangeContents(" ");
-        }
-        // Check whether the space that was clicked is on the left column.
-        else if(spacePosition%columns == 0) {
-            // Change the space and the space to the right.
-            spaces[spacePosition].ChangeContents(" ");
-            spaces[spacePosition+1].ChangeContents(" ");
-            // Change the space above and the one above-right.
-            spaces[spacePosition-columns].ChangeContents(" ");
-            spaces[spacePosition-columns+1].ChangeContents(" ");
-            // Change the space below and the one below-right.
-            spaces[spacePosition+columns].ChangeContents(" ");
-            spaces[spacePosition+columns+1].ChangeContents(" ");
-        }
-        else {
-            // Change the space, the space to the left, and the space to the right.
-            spaces[spacePosition].ChangeContents(" ");
-            spaces[spacePosition-1].ChangeContents(" ");
-            spaces[spacePosition+1].ChangeContents(" ");
-            // Change the space above, the space above-left, and the space above-right.
-            spaces[spacePosition-columns].ChangeContents(" ");
-            spaces[spacePosition-columns-1].ChangeContents(" ");
-            spaces[spacePosition-columns+1].ChangeContents(" ");
-            // Change the space below, the space below-left, and the space below-right.
-            spaces[spacePosition+columns].ChangeContents(" ");
-            spaces[spacePosition+columns-1].ChangeContents(" ");
-            spaces[spacePosition+columns+1].ChangeContents(" ");
-        }
+        ChangeValidContents(spaces, x, y, columns, rows, " ");
+        ChangeValidContents(spaces, x, y-1, columns, rows, " ");
+        ChangeValidContents(spaces, x+1, y-1, columns, rows, " ");
+        ChangeValidContents(spaces, x+1, y, columns, rows, " ");
+        ChangeValidContents(spaces, x+1, y+1, columns, rows, " ");
+        ChangeValidContents(spaces, x, y+1, columns, rows, " ");
+        ChangeValidContents(spaces, x-1, y+1, columns, rows, " ");
+        ChangeValidContents(spaces, x-1, y, columns, rows, " ");
+        ChangeValidContents(spaces, x-1, y-1, columns, rows, " ");
         firstMove = false;
+        // Fill the board with numbers.
+        for (let currentRow = 0; currentRow < rows; currentRow++) {
+            for (let currentColumn = 0; currentColumn < columns; currentColumn++) {
+                // If the current space is a mine, then there's no need to put on a number.
+                if (spacesToReturn[currentRow][currentColumn].Contents == "M") continue;
+                // Count the number of mines.
+                let numberToDisplay = 0;
+                numberToDisplay += Number(IsMine(spacesToReturn, currentColumn, currentRow-1, columns, rows)) || 0;
+                numberToDisplay += Number(IsMine(spacesToReturn, currentColumn+1, currentRow-1, columns, rows)) || 0;
+                numberToDisplay += Number(IsMine(spacesToReturn, currentColumn+1, currentRow, columns, rows)) || 0;
+                numberToDisplay += Number(IsMine(spacesToReturn, currentColumn+1, currentRow+1, columns, rows)) || 0;
+                numberToDisplay += Number(IsMine(spacesToReturn, currentColumn, currentRow+1, columns, rows)) || 0;
+                numberToDisplay += Number(IsMine(spacesToReturn, currentColumn-1, currentRow+1, columns, rows)) || 0;
+                numberToDisplay += Number(IsMine(spacesToReturn, currentColumn-1, currentRow, columns, rows)) || 0;
+                numberToDisplay += Number(IsMine(spacesToReturn, currentColumn-1, currentRow-1, columns, rows)) || 0;
+                // If there are no mines, then keep the space.
+                if (numberToDisplay == 0) continue;
+                // If there are mines, then write the number as a string to the space's label.
+                else {
+                    spacesToReturn[currentRow][currentColumn].ChangeContents(String(numberToDisplay));
+                }
+            }
+        }
     }
     
-    // Whether or not it's the first turn, reveal the current space.
-    spaces[spacePosition].Reveal();
-
-    // Reveal any adjacent spaces. It's important to, similar to above, make sure to find out where the adjacent spaces are. You don't want to check the space to the left if you're in the upper-left corner.
-    // First check if the space is blank, if it isn't then the surroundings shouldn't be revealed.
-    if(spaces[spacePosition].Contents == " ")
-        // If upper-left corner.
-        if(spacePosition == 0) {
-            // Reveal space to the right.
-            SpaceClick(spaces, spacePosition+1, columns, rows);
-            // Change the space below and the one below-right.
-            SpaceClick(spaces, spacePosition+columns, columns, rows);
-            SpaceClick(spaces, spacePosition+columns+1, columns, rows);
-        }
-        // If upper-right corner.
-        else if(spacePosition == columns-1) {
-            // Reveal the space to the left.
-            SpaceClick(spaces, spacePosition-1, columns, rows);
-            // Reveal the space below-left.
-            SpaceClick(spaces, spacePosition+columns, columns, rows);
-            SpaceClick(spaces, spacePosition+columns-1, columns, rows);
-        }
-        // If lower-left corner.
-        else if(spacePosition == rows*columns - columns) {
-            // Reveal the space to the right.
-            SpaceClick(spaces, spacePosition+1, columns, rows);
-            // Reveal the space below and the one below-right
-            SpaceClick(spaces, spacePosition-columns, columns, rows);
-            SpaceClick(spaces, spacePosition-columns+1, columns, rows);
-        }
-        // If lower-right corner.
-        else if(spacePosition == rows*columns-1) {
-            // Reveal the space to the left.
-            SpaceClick(spaces, spacePosition-1, columns, rows);
-            // Reveal the space above-left and the one above.
-            SpaceClick(spaces, spacePosition-columns-1, columns, rows);
-            SpaceClick(spaces, spacePosition-columns, columns, rows);
-        }
-        // If top row.
-        else if(Math.floor(spacePosition/columns) == 0) {
-            // Reveal the space to the left and the one to the right.
-            SpaceClick(spaces, spacePosition-1, columns, rows);
-            SpaceClick(spaces, spacePosition+1, columns, rows);
-            // Change the space below-left, the space below, and the space below-right.
-            SpaceClick(spaces, spacePosition+columns-1, columns, rows);
-            SpaceClick(spaces, spacePosition+columns, columns, rows);
-            SpaceClick(spaces, spacePosition+columns+1, columns, rows);
-        }
-        // If right column.
-        else if(spacePosition%columns == columns-1) {
-            // Reveal the space to the left.
-            SpaceClick(spaces, spacePosition-1, columns, rows);
-            // Reveal the space above-left and the one above.
-            SpaceClick(spaces, spacePosition-columns-1, columns, rows);
-            SpaceClick(spaces, spacePosition-columns, columns, rows);
-            // Change the space below-left, and the one below.
-            SpaceClick(spaces, spacePosition+columns-1, columns, rows);
-            SpaceClick(spaces, spacePosition+columns, columns, rows);
-        }
-        // If bottom row.
-        else if(Math.floor(spacePosition/columns) == rows-1) {
-            // Reveal the space to the left and the one to the right.
-            SpaceClick(spaces, spacePosition-1, columns, rows);
-            SpaceClick(spaces, spacePosition+1, columns, rows);
-            // Change the space above-left, the space above, and the space above-right.
-            SpaceClick(spaces, spacePosition-columns-1, columns, rows);
-            SpaceClick(spaces, spacePosition-columns, columns, rows);
-            SpaceClick(spaces, spacePosition-columns+1, columns, rows);
-        }
-        // If left column.
-        else if(spacePosition%columns == 0) {
-            // Reveal the space to the right.
-            SpaceClick(spaces, spacePosition-1, columns, rows);
-            // Reveal the space above and the one above-right.
-            SpaceClick(spaces, spacePosition-columns, columns, rows);
-            SpaceClick(spaces, spacePosition-columns+1, columns, rows);
-            // Reveal the space below and the one below-right.
-            SpaceClick(spaces, spacePosition+columns, columns, rows);
-            SpaceClick(spaces, spacePosition+columns+1, columns, rows);
-        }
-        else {
-            // Recursively call the function again for the spaces to the left, right.
-            SpaceClick(spaces, spacePosition-1, columns, rows);
-            SpaceClick(spaces, spacePosition+1, columns, rows);
-            // Do the same for the above, above-left, and above-right spaces.
-            SpaceClick(spaces, spacePosition-columns, columns, rows);
-            SpaceClick(spaces, spacePosition-columns-1, columns, rows);
-            SpaceClick(spaces, spacePosition-columns+1, columns, rows);
-            // And do the same for the below, below-left, and below-right spaces.
-            SpaceClick(spaces, spacePosition+columns, columns, rows);
-            SpaceClick(spaces, spacePosition+columns-1, columns, rows);
-            SpaceClick(spaces, spacePosition+columns+1, columns, rows);
-        }
+    // Start the recursive flood fill.
+    FloodUncover(spaces, x, y, columns, rows);
 }
 
-function ShowAll(spacesToShow) {
-    for(let currentSpaceNumber = 0; currentSpaceNumber < spacesToShow.length; currentSpaceNumber++) {
-        spacesToShow[currentSpaceNumber].Reveal();
+function FloodUncover(spaces, x, y, columns, rows) {
+    // If this space has already been revealed, then there's no need to continue.
+    if (spaces[y][x].Revealed == true) return;
+    // If this space is a number, then reveal but do not continue revealing.
+    if (spaces[y][x].Contents != " ") {
+        spaces[y][x].Reveal();
+        return;
+    }
+    // If it's out of bounds, then return.
+    if (x > (rows-1) || y > (columns-1) || x < 0 || y < 0) return;
+    spaces[y][x].Reveal();
+    // Go clockwise around the current space revealing all adjacent ones.
+    FloodUncover(spaces, x, y-1, columns, rows);
+    FloodUncover(spaces, x+1, y-1, columns, rows);
+    FloodUncover(spaces, x+1, y, columns, rows);
+    FloodUncover(spaces, x+1, y+1, columns, rows);
+    FloodUncover(spaces, x, y+1, columns, rows);
+    FloodUncover(spaces, x-1, y+1, columns, rows);
+    FloodUncover(spaces, x-1, y, columns, rows);
+    FloodUncover(spaces, x-1, y-1, columns, rows);
+}
+
+function ShowAll(spaces, columns, rows) {
+    for (let currentRow = 0; currentRow < rows; currentRow++) {
+        for (let currentColumn = 0; currentColumn < columns; currentColumn++) {
+            spaces[currentRow][currentColumn].Reveal();
+        }
     }
 }
 
@@ -316,7 +204,7 @@ function Shuffle(array) {
 const container = document.getElementById("gameContainer");
 let spaces = InitialiseGrid(16, 16);
 AddToGrid(spaces, 16, 16);
-document.getElementById("secretShowAll").addEventListener("click", () => {ShowAll(spaces)});
+document.getElementById("secretShowAll").addEventListener("click", () => {ShowAll(spaces, 16, 16)});
 
 // A global variable is used here to keep track of whether the current move is the first one to have been made.
 var firstMove = true;
