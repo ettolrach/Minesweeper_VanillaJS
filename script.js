@@ -177,6 +177,17 @@ function SpaceClick(spaces, x, y, columns, rows) {
 	
 	// Start the recursive flood fill.
 	FloodUncover(spaces, x, y, columns, rows);
+
+	for (let currentRow = 0; currentRow < 16; currentRow++) {
+		for (let currentColumn = 0; currentColumn < 16; currentColumn++) {
+			// If the space hasn't been uncovered and isn't a mine (i.e. board incomplete), return.
+			if (spaces[currentRow][currentColumn].Revealed == false && spaces[currentRow][currentColumn].Contents != "M") return;
+			// If the space *has* been revealed and it is a mine (i.e. player lost), return.
+			if (spaces[currentRow][currentColumn].Revealed == true && spaces[currentRow][currentColumn].Contents == "M") return;
+		}
+	}
+	document.getElementById("winText").style.display = "block";
+	document.getElementById("winText").style.color = "green";
 }
 
 function FloodUncover(spaces, x, y, columns, rows) {
