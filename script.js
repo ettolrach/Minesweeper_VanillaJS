@@ -1,5 +1,5 @@
 class Space {
-	constructor(revealed = false, contentsToGive = " ", id = "spaceXXX", flag="") {
+	constructor(revealed = false, contentsToGive = " ", id = "spaceXXX", flag = "") {
 		this.Revealed = revealed;
 		// The contents can either be " " or "M" which stand for an empty space and a mine respectively.
 		this.Contents = contentsToGive;
@@ -184,6 +184,13 @@ function FloodUncover(spaces, x, y, columns, rows) {
 	if (x > (rows-1) || y > (columns-1) || x < 0 || y < 0) return;
 	// If this space has already been revealed, then there's no need to continue.
 	if (spaces[y][x].Revealed == true) return;
+	// If the space is a mine, game over.
+	if (spaces[y][x].Contents == "M") {
+		ShowAll(spaces, columns, rows);
+		document.getElementById("loseText").style.display = "block";
+		document.getElementById("loseText").style.color = "red";
+		return;
+	}
 	// If this space is a number, then reveal but do not continue revealing.
 	if (spaces[y][x].Contents != " ") {
 		spaces[y][x].Reveal();
@@ -232,7 +239,16 @@ function Shuffle(array) {
 const container = document.getElementById("gameContainer");
 let spaces = InitialiseGrid(16, 16);
 AddToGrid(spaces, 16, 16);
-document.getElementById("secretShowAll").addEventListener("click", () => {ShowAll(spaces, 16, 16)});
+let spacesRevealed = 0;
+let mines = 0;
+for (let currentRow = 0; currentRow < 16; currentRow++) {
+	for (let currentColumn = 0; currentColumn < 16; currentColumn++) {
+		if (spaces[currentRow][currentColumn].Contents == "M") {
+			mines++;
+		}
+	}
+}
+document.getElementById("secretShowAll").addEventListener("click", () => {ShowAll(spaces, 16, 16);});
 
 // A global variable is used here to keep track of whether the current move is the first one to have been made.
 var firstMove = true;

@@ -19,6 +19,9 @@ body {
 	padding-top: 0;
 	text-align: center;
 }
+.gameOverTexts {
+	display: none;
+}
 main {
 	width: 80%;
 	margin: 1vh auto 0 auto;
