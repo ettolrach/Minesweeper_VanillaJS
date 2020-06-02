@@ -21,9 +21,12 @@ for (let i = 0; i < 3; i++) {
 		for (let j = 0; j < 3; j++) {
 			if (j != i) {
 				choices[j].Selected = false;
+				// This is for CSS colouring.
+				document.getElementById(choices[j].ID).classList.remove("activated");
 			}
 			else {
 				choices[i].Selected = true;
+				document.getElementById(choices[i].ID).classList.add("activated");
 			}
 		}
 	});
@@ -33,6 +36,9 @@ goButton.addEventListener("click", () => {
 	for (let i = 0; i < 3; i++) {
 		if (choices[i].Selected == false) continue;
 		StartGame(choices[i].Width, choices[i].Height, container);
+		document.getElementById("selection").style.display = "none";
+		document.getElementById("notice").style.display = "none";
+		return
 	}
-	document.getElementById("selection").style.display = "none";
+	document.getElementById("notice").style.display = "block";
 });

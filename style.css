@@ -27,6 +27,79 @@ main {
 	margin: 1vh auto 0 auto;
 }
 
+/* === Difficulty selection === */
+#options {
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+}
+.difficulty {
+	height: 20vh;
+	width: 20vw;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	border: 0.5vh solid;
+}
+#beginner {
+	background-color: rgb(0, 60, 10);
+	border-color: rgb(0, 20, 3);
+}
+#beginner:hover:not(.activated) {
+	background-color: rgb(0, 100, 17);
+}
+#beginner:active:not(.activated) {
+	background-color: rgb(0, 22, 4);
+}
+#beginner.activated {
+	background-color: rgb(0, 39, 7);
+	border-color: black;
+}
+#intermediate {
+	background-color: rgb(0, 31, 116);
+	border-color: rgb(0, 12, 44);
+}
+#intermediate:hover:not(.activated) {
+	background-color: rgb(0, 46, 173);
+}
+#intermediate:active:not(.activated) {
+	background-color: rgb(0, 13, 48);
+}
+#intermediate.activated {
+	background-color: rgb(0, 18, 68);
+	border-color: black;
+}
+#advanced {
+	background-color: rgb(116, 0, 0);
+	border-color: rgb(24, 0, 0);
+}
+#advanced:hover:not(.activated) {
+	background-color: rgb(172, 0, 0);
+}
+#advanced:active:not(.activated) {
+	background-color: rgb(31, 0, 0);
+}
+#advanced.activated {
+	background-color: rgb(87, 0, 0);
+	border-color: black;
+}
+#buttonContainer {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-top: 1vw;
+}
+#go {
+	width: 10vw;
+	height: 10vh;
+	background-color: rgb(27, 27, 27);
+	border: 0.5vh solid black;
+}
+#notice {
+	display: none;
+}
+
 /* === Game styling === */
 /* Game grid */
 /* Define a variable that holds the number of rows/columns - this will be changed by the JS. */
