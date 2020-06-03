@@ -50,8 +50,8 @@ function InitialiseGrid(columns, rows) {
 	for (let currentRow = 0; currentRow < rows; currentRow++) {
 		let rowToAppend = [];
 		for (let currentColumn = 0; currentColumn < columns; currentColumn++) {
-			// Decide whether this space should be a mine or not. Let the initial probability of the space being a mine be 1/4. Then, if there's not already too many mines, then make it a mine (in other words, if 1/3 of the board is filled with mines, then don't add any more). Otherwise, make it an empty space.
-			if(Math.floor(Math.random()*4) == 0 && minesNumber <= columns*rows/3) {
+			// Decide whether this space should be a mine or not. Let the initial probability of the space being a mine be 1/4. Then, if there's not already too many mines, then make it a mine (in other words, if 1/4 of the board is filled with mines, then don't add any more). Otherwise, make it an empty space.
+			if(Math.floor(Math.random()*4) == 0 && minesNumber <= columns*rows/4) {
 				rowToAppend.push(new Space(false, "M"));
 				minesNumber++;
 			}
