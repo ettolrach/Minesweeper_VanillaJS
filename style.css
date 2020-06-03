@@ -92,7 +92,7 @@ main {
 	grid-template-columns: repeat(var(--gridColumns), 1fr);
 	grid-template-rows: repeat(var(--gridRows), 1fr);
 	margin: 0 auto;
-	font-size: 2.5vh;
+	font-size: 2.3vh;
 }
 .spaces {
 	border: 1px solid  #666;

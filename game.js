@@ -186,8 +186,8 @@ function SpaceClick(spaces, x, y, columns, rows) {
 			if (spaces[currentRow][currentColumn].Revealed == true && spaces[currentRow][currentColumn].Contents == "M") return;
 		}
 	}
-	document.getElementById("winText").style.display = "block";
-	document.getElementById("winText").style.color = "green";
+	document.getElementById("subtitle").innerText = "You win!";
+	document.getElementById("subtitle").style.color = "green";
 	ShowAll(spaces, columns, rows)
 }
 
@@ -199,8 +199,8 @@ function FloodUncover(spaces, x, y, columns, rows) {
 	// If the space is a mine, game over.
 	if (spaces[y][x].Contents == "M") {
 		ShowAll(spaces, columns, rows);
-		document.getElementById("loseText").style.display = "block";
-		document.getElementById("loseText").style.color = "red";
+		document.getElementById("subtitle").innerText = "You lose!";
+		document.getElementById("subtitle").style.color = "red";
 		return;
 	}
 	// If this space is a number, then reveal but do not continue revealing.
