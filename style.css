@@ -65,15 +65,21 @@ main {
 	justify-content: center;
 	margin-top: 1vw;
 }
-#go {
-	width: 5vw;
+.clickableButton {
 	height: 5vh;
 	background-color: rgb(27, 27, 27);
 	border: 0.5vh solid black;
-	font-size: 1.6vw;
+	font-size: 1vw;
+}
+#go {
+	width: 5vw;
 }
 #notice {
 	display: none;
+}
+#retry {
+	display: none;
+	width: 6vw;
 }
 
 /* === Game styling === */

@@ -188,6 +188,7 @@ function SpaceClick(spaces, x, y, columns, rows) {
 	}
 	document.getElementById("subtitle").innerText = "You win!";
 	document.getElementById("subtitle").style.color = "green";
+	document.getElementById("retry").style.display = "block";
 	ShowAll(spaces, columns, rows)
 }
 
@@ -201,6 +202,7 @@ function FloodUncover(spaces, x, y, columns, rows) {
 		ShowAll(spaces, columns, rows);
 		document.getElementById("subtitle").innerText = "You lose!";
 		document.getElementById("subtitle").style.color = "red";
+		document.getElementById("retry").style.display = "block";
 		return;
 	}
 	// If this space is a number, then reveal but do not continue revealing.
@@ -249,20 +251,11 @@ function Shuffle(array) {
 }
 
 function StartGame(width, height, container) {
-	container
 	let spaces = InitialiseGrid(width, height);
 	AddToGrid(spaces, width, height);
-	let spacesRevealed = 0;
-	let mines = 0;
-	for (let currentRow = 0; currentRow < height; currentRow++) {
-		for (let currentColumn = 0; currentColumn < width; currentColumn++) {
-			if (spaces[currentRow][currentColumn].Contents == "M") {
-				mines++;
-			}
-		}
-	}
 	document.getElementById("secretShowAll").addEventListener("click", () => { ShowAll(spaces, width, height); });
 	container.style.display = "grid";
+	firstMove = true;
 }
 
 // A global variable is used here to keep track of whether the current move is the first one to have been made.
