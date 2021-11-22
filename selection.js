@@ -7,11 +7,27 @@ class Choice {
 	}
 }
 
-function Retry(choices, container, finalChoice) {
-	StartGame(choices[finalChoice].Width, choices[finalChoice].Height, container);
+function Retry() {
 	document.getElementById("retry").style.display = "none";
 	document.getElementById("subtitle").innerText = "Implemented using VanillaJS";
 	document.getElementById("subtitle").style.color = "white";
+	document.getElementById("notice").style.display = "none";
+	document.getElementById("selection").style.display = "block";
+	container.style.display = "none";
+	for (let i = 0; i < 3; i++) {
+		choices[i].Selected = false;
+		document.getElementById(choices[i].ID).classList.remove("activated");
+	}
+}
+
+function InitialiseGame(func) {
+	for (let i = 0; i < 3; i++) {
+		if (choices[i].Selected == false) continue;
+		func(choices[i].Width, choices[i].Height, container);
+		finalChoice = i;
+		return true;
+	}
+	return false;
 }
 
 let choices = []
@@ -40,19 +56,21 @@ for (let i = 0; i < 3; i++) {
 		}
 	});
 }
+
 // Start a game when the go button is clicked.
 goButton.addEventListener("click", () => {
-	for (let i = 0; i < 3; i++) {
-		if (choices[i].Selected == false) continue;
-		StartGame(choices[i].Width, choices[i].Height, container);
-		finalChoice = i;
+	started = InitialiseGame(StartGame);
+
+	// If an option is not selected, then display the notice.
+	if (!started) {
+		document.getElementById("notice").style.display = "block";
+	}
+	else {
 		document.getElementById("selection").style.display = "none";
 		document.getElementById("notice").style.display = "none";
-		return
 	}
-	document.getElementById("notice").style.display = "block";
 });
 
 retryButton.addEventListener("click", () => {
-	Retry(choices, container, finalChoice)
+	InitialiseGame(Retry);
 });
