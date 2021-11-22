@@ -5,6 +5,24 @@ class Choice {
 		this.Height = height;
 		this.Selected = selected;
 	}
+
+	Select() {
+		this.Selected = true;
+		document.getElementById(this.ID).classList.add("activated")
+	}
+	Deselect() {
+		this.Selected = false;
+		document.getElementById(this.ID).classList.remove("activated")
+	}
+	ChangeSelect() {
+		this.Selected = !this.Selected;
+		if (document.getElementById(this.ID).classList.contains("activated")) {
+			document.getElementById(this.ID).classList.remove("activated")
+		}
+		else {
+			document.getElementById(this.ID).classList.add("activated")
+		}
+	}
 }
 
 function Retry() {
@@ -15,8 +33,7 @@ function Retry() {
 	document.getElementById("selection").style.display = "block";
 	container.style.display = "none";
 	for (let i = 0; i < 3; i++) {
-		choices[i].Selected = false;
-		document.getElementById(choices[i].ID).classList.remove("activated");
+		choices[i].Deselect();
 	}
 }
 
@@ -45,13 +62,10 @@ for (let i = 0; i < 3; i++) {
 		// Loop through all elements again and change them to false except for the selected one.
 		for (let j = 0; j < 3; j++) {
 			if (j != i) {
-				choices[j].Selected = false;
-				// This is for CSS colouring.
-				document.getElementById(choices[j].ID).classList.remove("activated");
+				choices[j].Deselect();
 			}
 			else {
-				choices[i].Selected = true;
-				document.getElementById(choices[i].ID).classList.add("activated");
+				choices[i].Select();
 			}
 		}
 	});
