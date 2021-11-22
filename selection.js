@@ -32,15 +32,15 @@ function Retry() {
 	document.getElementById("notice").style.display = "none";
 	document.getElementById("selection").style.display = "block";
 	container.style.display = "none";
-	for (let i = 0; i < 3; i++) {
-		choices[i].Deselect();
+	for (const choice of choices) {
+		choice.Deselect();
 	}
 }
 
 function InitialiseGame(func) {
-	for (let i = 0; i < 3; i++) {
-		if (choices[i].Selected == false) continue;
-		func(choices[i].Width, choices[i].Height, container);
+	for (const choice of choices) {
+		if (choice.Selected == false) continue;
+		func(choice.Width, choice.Height, container);
 		return true;
 	}
 	return false;
