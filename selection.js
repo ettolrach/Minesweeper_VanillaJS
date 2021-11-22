@@ -41,14 +41,12 @@ function InitialiseGame(func) {
 	for (let i = 0; i < 3; i++) {
 		if (choices[i].Selected == false) continue;
 		func(choices[i].Width, choices[i].Height, container);
-		finalChoice = i;
 		return true;
 	}
 	return false;
 }
 
 let choices = []
-let finalChoice = 0;
 choices.push(new Choice("beginner", 9, 9));
 choices.push(new Choice("intermediate", 16, 16));
 choices.push(new Choice("advanced", 22, 22));
