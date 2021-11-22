@@ -1,6 +1,6 @@
 class Choice {
 	constructor(id, width, height, selected = false) {
-		this.ID = id;
+		this.Element = document.getElementById(id);
 		this.Width = width;
 		this.Height = height;
 		this.Selected = selected;
@@ -8,19 +8,19 @@ class Choice {
 
 	Select() {
 		this.Selected = true;
-		document.getElementById(this.ID).classList.add("activated")
+		this.Element.classList.add("activated")
 	}
 	Deselect() {
 		this.Selected = false;
-		document.getElementById(this.ID).classList.remove("activated")
+		this.Element.classList.remove("activated")
 	}
 	ChangeSelect() {
 		this.Selected = !this.Selected;
-		if (document.getElementById(this.ID).classList.contains("activated")) {
-			document.getElementById(this.ID).classList.remove("activated")
+		if (this.Element.classList.contains("activated")) {
+			this.Element.classList.remove("activated")
 		}
 		else {
-			document.getElementById(this.ID).classList.add("activated")
+			this.Element.classList.add("activated")
 		}
 	}
 }
@@ -58,7 +58,7 @@ const container = document.getElementById("gameContainer");
 const retryButton = document.getElementById("retry");
 // Change the selected status when the selection is clicked.
 for (let i = 0; i < 3; i++) {
-	document.getElementById(choices[i].ID).addEventListener("click", () => {
+	choices[i].Element.addEventListener("click", () => {
 		// Loop through all elements again and change them to false except for the selected one.
 		for (let j = 0; j < 3; j++) {
 			if (j != i) {
