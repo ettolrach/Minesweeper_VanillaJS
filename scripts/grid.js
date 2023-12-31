@@ -45,9 +45,9 @@ export class Grid {
 		for (let i = 0; i < width * height; i++) {
 			// Decide whether this space should be a mine or not.
 			// Let the initial probability of the space being a mine be 1/6.
-			// Then, unless there's too many mines, then make it a mine.
-			// In other words, if 1/4 of the board is filled with mines, then don't add any more;
-			// otherwise, make it an empty space.
+			// Then, unless there's too many mines, make it a mine.
+			// In other words, if 1/4 of the board is filled with mines, then don't add any more,
+			// make it an empty space.
 			if(Math.floor(Math.random()*6) == 0 && minesNumber <= (width * height) / 4) {
 				this.Spaces.push(new Space(false, Contents.Mine, `space${i}`));
 				minesNumber++;
